@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "course-project-2-workradar"
+version = "0.1.0"
+description = ""
+authors = ["a12345 <shu.m2010@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

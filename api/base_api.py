@@ -8,4 +8,3 @@ class BaseAPI(ABC):
     def get_vacancies(self, search_query: str):
         """Метод для получения вакансий по ключевому слову"""
         pass
-

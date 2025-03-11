@@ -18,7 +18,10 @@ def test_get_vacancies_success(mocker, hh_api):
         ]
     }
 
-    mocker.patch("api.hh_api.requests.get", return_value=mocker.Mock(status_code=200, json=lambda: mock_response))
+    mocker.patch(
+        "api.hh_api.requests.get",
+        return_value=mocker.Mock(status_code=200, json=lambda: mock_response),
+    )
 
     vacancies = hh_api.get_vacancies("Python")
     assert len(vacancies) == 2
@@ -39,7 +42,10 @@ def test_get_vacancies_fail(mocker, hh_api):
 
 def test_get_vacancies_http_error(mocker, hh_api):
     """Тестируем обработку ошибки 404"""
-    mocker.patch("api.hh_api.requests.get", side_effect=requests.exceptions.HTTPError("404 Not Found"))
+    mocker.patch(
+        "api.hh_api.requests.get",
+        side_effect=requests.exceptions.HTTPError("404 Not Found"),
+    )
 
     vacancies = hh_api.get_vacancies("Python")
     assert vacancies == []  # Ожидаем пустой список при ошибке API
@@ -51,4 +57,3 @@ def test_get_vacancies_timeout(mocker, hh_api):
 
     vacancies = hh_api.get_vacancies("Python")
     assert vacancies == []  # Ожидаем пустой список при таймауте
-

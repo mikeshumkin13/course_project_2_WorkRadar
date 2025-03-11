@@ -40,4 +40,3 @@ class Vacancy:
         if not isinstance(other, Vacancy):
             return NotImplemented
         return self.salary == other.salary
-

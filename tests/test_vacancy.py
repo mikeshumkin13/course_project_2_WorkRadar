@@ -54,4 +54,3 @@ def test_vacancy_equality():
     v2 = Vacancy("Dev B", "https://hh.ru/222", 120000, "Desc B")
 
     assert v1 == v2  # 120000 == 120000
-

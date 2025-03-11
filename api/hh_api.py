@@ -9,17 +9,21 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
+
 class HeadHunterAPI(BaseAPI):
     """Класс для работы с API hh.ru"""
 
     BASE_URL = "https://api.hh.ru/vacancies"
 
-    def get_vacancies(self, search_query: str, area: int = None, salary: int = None, employment: str = None):
+    def get_vacancies(
+        self,
+        search_query: str,
+        area: int = None,
+        salary: int = None,
+        employment: str = None,
+    ):
         """Получает вакансии по ключевому слову и дополнительным параметрам"""
-        params = {
-            "text": search_query,
-            "per_page": 20
-        }
+        params = {"text": search_query, "per_page": 20}
         if area:
             params["area"] = area
         if salary:
@@ -40,4 +44,3 @@ class HeadHunterAPI(BaseAPI):
         except requests.exceptions.RequestException as e:
             logging.error(f"Ошибка запроса: {e}")
             return []
-

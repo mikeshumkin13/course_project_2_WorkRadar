@@ -48,5 +48,19 @@ class JSONStorage(BaseStorage):
         """Сохраняет список вакансий в JSON"""
         with open(self.filename, "w", encoding="utf-8") as f:
             json.dump(
-                [vac.__dict__ for vac in vacancies], f, ensure_ascii=False, indent=4
+                [self._vacancy_to_dict(v) for v in vacancies],
+                f,
+                ensure_ascii=False,
+                indent=4
             )
+
+    def _vacancy_to_dict(self, vacancy: Vacancy) -> dict:
+        """Преобразует объект Vacancy в словарь"""
+        return {
+            "title": vacancy.title,
+            "url": vacancy.url,
+            "salary": vacancy.salary,
+            "description": vacancy.description
+        }
+
+

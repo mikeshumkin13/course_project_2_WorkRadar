@@ -18,6 +18,8 @@ class Vacancy:
             raise ValueError("Название вакансии не может быть пустым")
         if not self.url.startswith("http"):
             raise ValueError("Некорректный URL вакансии")
+        if self.salary is None:
+            self.salary = 0  # Если зарплата не указана, ставим 0
         if self.salary < 0:
             raise ValueError("Зарплата не может быть отрицательной")
         if not self.description:

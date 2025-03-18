@@ -1,12 +1,17 @@
 from dataclasses import dataclass
 
-@dataclass
+@dataclass(order=True)
 class Vacancy:
-    """Класс для представления вакансии"""
     title: str
     url: str
     salary: int
     description: str
+
+    def __eq__(self, other):
+        if isinstance(other, Vacancy):
+            return self.salary == other.salary
+        return False
+
 
     def __post_init__(self):
         """Вызываем методы валидации после инициализации атрибутов"""

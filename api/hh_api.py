@@ -2,6 +2,7 @@ import requests
 from api.base_api import BaseAPI
 from utils.logger import logger
 
+
 class HeadHunterAPI(BaseAPI):
     """Класс для работы с API hh.ru"""
 
@@ -20,7 +21,7 @@ class HeadHunterAPI(BaseAPI):
             return response.json()
         except requests.exceptions.RequestException as e:
             logger.error(f"Ошибка при запросе к API: {e}")
-            return None
+            return None  # Важно: API вернет None при ошибке
 
     def get_vacancies(self, search_query: str, area: int = None, salary: int = None, employment: str = None):
         """Получает вакансии по ключевому слову и дополнительным параметрам"""
@@ -33,10 +34,11 @@ class HeadHunterAPI(BaseAPI):
             params["employment"] = employment
 
         data = self._connect(self.BASE_URL, params)
-        if data:
-            vacancies = data.get("items", [])
-            logger.info(f"Запрос: {params} | Найдено вакансий: {len(vacancies)}")
-            return vacancies
-        return []
+        if not data:  # Если `None`, вернуть пустой список
+            logger.warning(f"Ошибка при запросе, возвращаем пустой список. Запрос: {params}")
+            return []
 
+        vacancies = data.get("items", [])
+        logger.info(f"Запрос: {params} | Найдено вакансий: {len(vacancies)}")
+        return vacancies
 

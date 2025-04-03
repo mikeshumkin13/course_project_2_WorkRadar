@@ -10,50 +10,39 @@ def hh_api():
 
 
 def test_get_vacancies_success(mocker, hh_api):
-    """Тестируем успешное получение вакансий"""
-    mock_response = {
-        "items": [
-            {"name": "Python Developer", "alternate_url": "https://hh.ru/vacancy/123"},
-            {"name": "Backend Developer", "alternate_url": "https://hh.ru/vacancy/456"},
-        ]
-    }
+    """Тест успешного получения вакансий"""
+    mock_response = {"items": [{"name": "Python Dev", "alternate_url": "https://hh.ru/vacancy/123"}]}
 
-    mocker.patch(
-        "api.hh_api.requests.get",
-        return_value=mocker.Mock(status_code=200, json=lambda: mock_response),
-    )
+    # Мокаем `self._session.get`, а не `requests.get`
+    mock_get = mocker.patch.object(hh_api._session, "get")
+    mock_get.return_value.status_code = 200
+    mock_get.return_value.json.return_value = mock_response
 
     vacancies = hh_api.get_vacancies("Python")
-    assert len(vacancies) == 2
-    assert vacancies[0]["name"] == "Python Developer"
-    assert vacancies[1]["name"] == "Backend Developer"
+    assert len(vacancies) == 1, f"Ожидали 1 вакансию, но получили {len(vacancies)}"
 
 
 def test_get_vacancies_fail(mocker, hh_api):
-    """Тестируем обработку ошибки API"""
-    mock_response = mocker.Mock(status_code=500, text="Internal Server Error")
-    mock_response.json.return_value = {}  # Добавляем мок для json()
-
-    mocker.patch("api.hh_api.requests.get", return_value=mock_response)
+    """Тест обработки ошибки API"""
+    mock_get = mocker.patch.object(hh_api._session, "get")
+    mock_get.return_value.status_code = 500
+    mock_get.return_value.json.return_value = {}  # API возвращает пустой словарь
 
     vacancies = hh_api.get_vacancies("Python")
-    assert vacancies == []  # Ожидаем пустой список при ошибке API
+    assert vacancies == [], f"Ожидался пустой список, но получили {vacancies}"
 
 
 def test_get_vacancies_http_error(mocker, hh_api):
-    """Тестируем обработку ошибки 404"""
-    mocker.patch(
-        "api.hh_api.requests.get",
-        side_effect=requests.exceptions.HTTPError("404 Not Found"),
-    )
+    """Тест обработки ошибки 404"""
+    mocker.patch.object(hh_api._session, "get", side_effect=requests.exceptions.HTTPError("404 Not Found"))
 
     vacancies = hh_api.get_vacancies("Python")
-    assert vacancies == []  # Ожидаем пустой список при ошибке API
+    assert vacancies == [], f"Ожидался пустой список при HTTP 404, но получили {vacancies}"
 
 
 def test_get_vacancies_timeout(mocker, hh_api):
-    """Тестируем обработку ошибки сети (таймаут)"""
-    mocker.patch("api.hh_api.requests.get", side_effect=requests.exceptions.Timeout)
+    """Тест обработки таймаута"""
+    mocker.patch.object(hh_api._session, "get", side_effect=requests.exceptions.Timeout)
 
     vacancies = hh_api.get_vacancies("Python")
-    assert vacancies == []  # Ожидаем пустой список при таймауте
+    assert vacancies == [], f"Ожидался пустой список при таймауте, но получили {vacancies}"

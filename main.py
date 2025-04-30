@@ -123,3 +123,4 @@ def delete_vacancy(storage):
 
 if __name__ == "__main__":
     main()
+

@@ -1,44 +1,45 @@
 from dataclasses import dataclass
 
-
-@dataclass
+@dataclass(order=True)
 class Vacancy:
-    """Класс вакансии, содержащий основные данные"""
-
-    title: str  # Название вакансии
-    url: str  # Ссылка на вакансию
-    salary: int  # Зарплата
-    description: str  # Описание вакансии
-
-    __slots__ = ("title", "url", "salary", "description")
-
-    def __post_init__(self):
-        """Валидация данных после инициализации"""
-        if not self.title:
-            raise ValueError("Название вакансии не может быть пустым")
-        if not self.url.startswith("http"):
-            raise ValueError("Некорректный URL вакансии")
-        if self.salary is None:
-            self.salary = 0  # Если зарплата не указана, ставим 0
-        if self.salary < 0:
-            raise ValueError("Зарплата не может быть отрицательной")
-        if not self.description:
-            self.description = "Описание отсутствует"
-
-    def __lt__(self, other):
-        """Сравнение вакансий по зарплате (меньше)"""
-        if not isinstance(other, Vacancy):
-            return NotImplemented
-        return self.salary < other.salary
-
-    def __gt__(self, other):
-        """Сравнение вакансий по зарплате (больше)"""
-        if not isinstance(other, Vacancy):
-            return NotImplemented
-        return self.salary > other.salary
+    title: str
+    url: str
+    salary: int
+    description: str
 
     def __eq__(self, other):
-        """Сравнение вакансий по зарплате (равенство)"""
-        if not isinstance(other, Vacancy):
-            return NotImplemented
-        return self.salary == other.salary
+        if isinstance(other, Vacancy):
+            return self.salary == other.salary
+        return False
+
+
+    def __post_init__(self):
+        """Вызываем методы валидации после инициализации атрибутов"""
+        self._validate_title()
+        self._validate_url()
+        self._validate_salary()
+        self._validate_description()
+
+    def _validate_title(self):
+        """Проверка корректности названия вакансии"""
+        if not self.title or not isinstance(self.title, str):
+            raise ValueError("Название вакансии должно быть строкой и не пустым")
+
+    def _validate_url(self):
+        """Проверка корректности URL"""
+        if not self.url.startswith("http"):
+            raise ValueError("URL вакансии должен начинаться с http")
+
+    def _validate_salary(self):
+        """Проверка корректности зарплаты"""
+        if self.salary is None:
+            self.salary = 0  # Если зарплата не указана, ставим 0
+        if not isinstance(self.salary, int) or self.salary < 0:
+            raise ValueError("Зарплата должна быть положительным числом")
+
+    def _validate_description(self):
+        """Проверка корректности описания вакансии"""
+        if not self.description or not isinstance(self.description, str):
+            self.description = "Описание отсутствует"
+
+

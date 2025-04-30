@@ -21,20 +21,23 @@ def test_create_vacancy_default_description():
 
 def test_create_vacancy_invalid_title():
     """Проверяем валидацию: пустое название вакансии"""
-    with pytest.raises(ValueError, match="Название вакансии не может быть пустым"):
+    with pytest.raises(ValueError, match="Название вакансии должно быть строкой и не пустым"):
         Vacancy("", "https://hh.ru/123", 150000, "Опыт от 3 лет")
+
 
 
 def test_create_vacancy_invalid_url():
     """Проверяем валидацию: некорректный URL"""
-    with pytest.raises(ValueError, match="Некорректный URL вакансии"):
+    with pytest.raises(ValueError, match="URL вакансии должен начинаться с http"):
         Vacancy("Python Dev", "hh.ru/123", 150000, "Опыт от 3 лет")
+
 
 
 def test_create_vacancy_negative_salary():
     """Проверяем валидацию: отрицательная зарплата"""
-    with pytest.raises(ValueError, match="Зарплата не может быть отрицательной"):
+    with pytest.raises(ValueError, match="Зарплата должна быть положительным числом"):
         Vacancy("Python Dev", "https://hh.ru/123", -50000, "Опыт от 3 лет")
+
 
 
 def test_vacancy_comparison():
